@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34003.232
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "BT2_Heuristic_FastCalculator", "BT2_Heuristic_FastCalculator\BT2_Heuristic_FastCalculator.pyproj", "{18987F11-A56F-44B1-B593-63C2EBD6A99A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{18987F11-A56F-44B1-B593-63C2EBD6A99A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18987F11-A56F-44B1-B593-63C2EBD6A99A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {45A69D3A-D352-452B-B8FD-5D8EE0C04889}
+	EndGlobalSection
+EndGlobal
