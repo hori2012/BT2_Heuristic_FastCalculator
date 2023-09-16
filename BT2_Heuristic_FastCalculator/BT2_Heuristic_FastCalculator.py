@@ -1,4 +1,6 @@
-﻿#Kiem tra tinh hop le cua bieu thuc
+﻿import math
+from unittest import result
+#Kiem tra tinh hop le cua bieu thuc
 #Chi kiem tra bieu thuc chua so va toan tu
 #Khong cho hai toan tu lien nhau, vi du: 8 + -7
 #Chua kiem tra het cac truong hop khac: co dau ngoac,  8 + - 7 = 8 - 7,...
@@ -110,12 +112,12 @@ def combine_terms_rul4(exprs):
                 value1 = terms_copy[i]
                 value2 = terms_copy[j]
                 if i == 0:
-                    del terms[j],  terms[index2 - 1],  terms[i + 1],  terms[i]
+                    del terms[j],  terms[index2 - 1], terms[i]
                     terms.append('*')
                     terms.append(value1*value2)
                     break
                 else:
-                    del terms[j],  terms[index2 - 1],  terms[i],  terms[index1 - 1]
+                    del terms[j], terms[index2 - 1], terms[i], terms[index1 - 1]
                     terms.append('*')
                     terms.append(value1*value2)
                     break
@@ -123,8 +125,31 @@ def combine_terms_rul4(exprs):
 
 #Quy tac 5: Bo cac so 0 sau ket qua, va them lai cac so 0 vao ket qua cuoi cung
 def combine_terms_rul5(exprs):
-    
-    return NULL
+    terms = []
+    term =''
+    for char in exprs:
+        if char.isdigit():
+            term += char
+        else:
+            terms.append(term)
+            terms.append(char)
+            term = ''
+    terms.append(term)
+    zero = 0
+    count = 0
+    for i in range(0, len(terms), 2):
+        if '0' in terms[i]:
+            for j in terms[i]:
+               if j.isdigit() and j !='0':
+                   count+=1
+            zero += (len(terms[i]) - count)
+            terms[i] = terms[i][0:count]
+            count = 0
+    terms.append({'zero': zero})
+    terms[0:(len(terms) - 1)] = [''.join(str(x) for x in terms[0:(len(terms) - 1)])]
+    return terms
+
+#Quy tac 6: Dat thua so chung
 
 #Quy tac 7: Tinh tuan tu
 def combine_terms_rul7(exprs):
@@ -136,14 +161,20 @@ while True:
     while not valid_expression(exprs):
         exprs = str(input("Enter the expression to calculate: "))
     exprs = exprs.replace(' ', '')
-    print("Result: ", end=' ')
-    if check_expression(exprs) == 0:
+    if check_expression(exprs) == 0 and exprs !='':
         #Expression sample: 2+5-2+8-7-5+8+2-7+9
-        print(combine_terms_rul1(exprs))
-        print(combine_terms_rul2(exprs))
-        print(combine_terms_rul7(combine_terms_rul2(combine_terms_rul1(exprs))))
-    elif check_expression(exprs) == 1:
-       print(combine_terms_rul3(exprs))
-       print(combine_terms_rul4(exprs))
-    elif exprs == '':
+        print("After apply rules 1: ",combine_terms_rul1(exprs))
+        print("After apply rules 2: ",combine_terms_rul2(combine_terms_rul1(exprs)))
+        print("Result: ",combine_terms_rul7(combine_terms_rul2(combine_terms_rul1(exprs))))
+    elif check_expression(exprs) == 1 and exprs !='':
+       #Expression example 25*10*5*20*4*100
+       if combine_terms_rul3(exprs) == '0':
+            print("Result: ",combine_terms_rul3(exprs))
+       else:
+            print("After apply rules 4: ",combine_terms_rul4(exprs))
+            my_list = combine_terms_rul5(exprs)
+            print(my_list)
+            result = str(combine_terms_rul7(my_list[0])) + ('0' * my_list[1]['zero'])
+            print("(After apply rules 5)Result: ", result)
+    else:
         break
