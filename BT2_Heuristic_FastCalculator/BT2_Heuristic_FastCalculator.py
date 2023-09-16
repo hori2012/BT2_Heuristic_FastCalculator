@@ -2,9 +2,6 @@
 #Chi kiem tra bieu thuc chua so va toan tu
 #Khong cho hai toan tu lien nhau, vi du: 8 + -7
 #Chua kiem tra het cac truong hop khac: co dau ngoac,  8 + - 7 = 8 - 7,...
-from asyncio.windows_events import NULL
-
-
 def valid_expression(exprs):
     operators = ['+', '-', '*']
     for x in range(len(exprs)):
