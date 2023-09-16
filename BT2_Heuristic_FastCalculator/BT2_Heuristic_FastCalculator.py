@@ -112,7 +112,7 @@ def combine_terms_rul4(exprs):
                 value1 = terms_copy[i]
                 value2 = terms_copy[j]
                 if i == 0:
-                    del terms[j],  terms[index2 - 1], terms[i]
+                    del terms[j],  terms[index2 - 1], terms[i + 1], terms[i]
                     terms.append('*')
                     terms.append(value1*value2)
                     break
