@@ -94,34 +94,24 @@ def combine_terms_rul4(exprs):
     terms = []
     term =''
     for char in exprs:
-        if char.isdigit():
+       if char.isdigit() or (char == '-' and term == ''):
             term += char
-        else:
+       elif char == '-' and term != '':
             terms.append(int(term))
-            terms.append(char)
+            term = char
+       else:
+            terms.append(int(term))
             term = ''
     terms.append(int(term))
-    terms_copy = terms.copy()
-    for i in range(0, len(terms_copy), 2):
-         for j in range(0, len(terms_copy), 2):
-             if i == j:
-                 continue
-             elif (terms_copy[i]*terms_copy[j]) % 10 == 0 and (terms_copy[i] in terms and terms_copy[j] in terms):
-                index1 = i
-                index2 = j
-                value1 = terms_copy[i]
-                value2 = terms_copy[j]
-                if i == 0:
-                    del terms[j],  terms[index2 - 1], terms[i + 1], terms[i]
-                    terms.append('*')
-                    terms.append(value1*value2)
-                    break
-                else:
-                    del terms[j], terms[index2 - 1], terms[i], terms[index1 - 1]
-                    terms.append('*')
-                    terms.append(value1*value2)
-                    break
-    return ''.join(str(x) for x in terms)
+    for i1, val1 in enumerate(terms):
+        for i2, val2 in enumerate(terms):
+            if i1 == i2:
+                continue
+            elif (val1*val2) % 10 == 0:
+                terms.append(val1 * val2)
+                break
+    print(terms)
+    return '*'.join(str(x) for x in terms)
 
 #Quy tac 5: Bo cac so 0 sau ket qua, va them lai cac so 0 vao ket qua cuoi cung
 def combine_terms_rul5(exprs):
