@@ -1,29 +1,51 @@
 ﻿import math
-from unittest import result
 #Kiem tra tinh hop le cua bieu thuc
 #Chi kiem tra bieu thuc chua so va toan tu
-#Khong cho hai toan tu lien nhau, vi du: 8 + -7
-#Chua kiem tra het cac truong hop khac: co dau ngoac,  8 + - 7 = 8 - 7,...
 def valid_expression(exprs):
     operators = ['+', '-', '*']
     for x in range(len(exprs)):
-        if exprs[x] in operators and exprs[x + 1] in operators:
+        if not(exprs[x].isdigit() or exprs[x] in operators):
             return False
-        elif exprs[x].isdigit() or exprs[x] in operators:
-            continue
-        else: return False
+        if exprs[x] == '-' and exprs[x + 1] == '*':
+            return False
+        if exprs[x] == '*' and exprs[x + 1] == '*':
+            return False
+        if exprs[x] == '+' and exprs[x + 1] == '*':
+            return False
+    if exprs[len(exprs) - 1].isdigit() == False:
+        return False
     return True   
         
 #Kiem tra dang cua bieu thuc
-#Bieu thuc chi co +, - thi tra ve 0
-#Bieu thuc chi co * thi tra ve 1
-#Bieu thuc co +. -, * thi tra ve -1
+#Bieu thuc chi  phep cong hoac tru '+', '-' thi tra ve 0
+#Bieu thuc chi phep nhan '*' thi tra ve 1
+#Bieu thuc chi co +, -, * thi tra ve -1
 def check_expression(exprs):
-    if ('+' in exprs) or ('-' in exprs):
-        if '*' in exprs:
-            return -1
-        else: return 0
-    else: return 1
+    operators = ['+','-','*']
+    terms = []
+    char = ''
+    for x in exprs:
+        if x in operators:
+            char += x
+        elif x.isdigit():
+            if char != '':
+                terms.append(char)
+                char = ''
+    if ('-' in terms or '+' in terms) and ('*' in terms or '*-' in terms):
+        return -1
+    elif ('*' in terms or '*-' in terms) and ('-' not in terms and '+' not in terms):
+         return 1
+    return 0
+
+#Bien doi bieu thuc
+def transform_expression(exprs):
+    result = exprs
+    result = result.replace('++', '+')
+    result = result.replace('+-', '-')
+    result = result.replace('--', '+')
+    result = result.replace('-+', '-')
+    result = result.replace('*+', '*')
+    return result
 
 #Quy tac 1: Cac so hang doi nhau
 def combine_terms_rul1(expr):
@@ -90,34 +112,31 @@ def combine_terms_rul3(exprs):
     return exprs
 
 #Quy tac 4: Gom nhom cac so hang co tich tron tram, tron chuc, tron nghin
-def combine_terms_rul4(exprs):
+def combine_terms_rul4(expr):
     terms = []
-    term =''
-    for char in exprs:
-       if char.isdigit() or (char == '-' and term == ''):
+    term = ''
+    for char in expr:
+        if char.isdigit() or char == '-':
             term += char
-       elif char == '-' and term != '':
-            terms.append(int(term))
-            term = char
-       else:
+        elif char == '*':
             terms.append(int(term))
             term = ''
     terms.append(int(term))
-    for i1, val1 in enumerate(terms):
-        for i2, val2 in enumerate(terms):
-            if i1 == i2:
-                continue
-            elif (val1*val2) % 10 == 0:
-                terms.append(val1 * val2)
-                break
     print(terms)
-    return '*'.join(str(x) for x in terms)
+    # for i1, val1 in enumerate(terms):
+    #     for i2, val2 in enumerate(terms):
+    #         if i1 == i2:
+    #             continue
+    #         elif (val1*val2) % 10 == 0:
+    #             terms.append(val1 * val2)
+    #             break
+    return "Hello"
 
 #Quy tac 5: Bo cac so 0 sau ket qua, va them lai cac so 0 vao ket qua cuoi cung
-def combine_terms_rul5(exprs):
+def combine_terms_rul5(expr):
     terms = []
     term =''
-    for char in exprs:
+    for char in expr:
         if char.isdigit():
             term += char
         else:
@@ -150,6 +169,7 @@ while True:
     exprs = str(input("Enter the expression to calculate: "))
     while not valid_expression(exprs):
         exprs = str(input("Enter the expression to calculate: "))
+    exprs = transform_expression(exprs)
     exprs = exprs.replace(' ', '')
     if check_expression(exprs) == 0 and exprs !='':
         #Expression sample: 2+5-2+8-7-5+8+2-7+9
