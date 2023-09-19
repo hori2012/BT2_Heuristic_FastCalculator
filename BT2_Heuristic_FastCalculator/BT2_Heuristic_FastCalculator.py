@@ -48,11 +48,11 @@ def transform_expression(exprs):
     return result
 
 #Quy tac 1: Cac so hang doi nhau
-def combine_terms_rul1(expr):
+def combine_terms_rul1(exprs):
     terms = []
     term = ''
     result = ''
-    for char in expr:
+    for char in exprs:
         if char.isdigit() or (char == '-' and term == ''):
             term += char
         else:
@@ -73,10 +73,10 @@ def combine_terms_rul1(expr):
     return result
 
 #Quy tac 2: Gom nhóm các số hạng có tổng tròn trăm ,tròn chục, tròn nghìn.
-def combine_terms_rul2(expr):
+def combine_terms_rul2(exprs):
     terms = []
     term = ''
-    for char in expr:
+    for char in exprs:
         if char.isdigit() or (char == '-' and term == ''):
             term += char
         elif char == '-' and term != '':
@@ -112,31 +112,30 @@ def combine_terms_rul3(exprs):
     return exprs
 
 #Quy tac 4: Gom nhom cac so hang co tich tron tram, tron chuc, tron nghin
-def combine_terms_rul4(expr):
+def combine_terms_rul4(exprs):
     terms = []
     term = ''
-    for char in expr:
+    for char in exprs:
         if char.isdigit() or char == '-':
             term += char
         elif char == '*':
             terms.append(int(term))
             term = ''
     terms.append(int(term))
-    print(terms)
-    # for i1, val1 in enumerate(terms):
-    #     for i2, val2 in enumerate(terms):
-    #         if i1 == i2:
-    #             continue
-    #         elif (val1*val2) % 10 == 0:
-    #             terms.append(val1 * val2)
-    #             break
-    return "Hello"
+    terms_copy = terms.copy()
+    for i in range(len(terms_copy)):
+        for j in range(i + 1, len(terms_copy)) :
+            if (terms_copy[i] * terms_copy[j]) % 10 == 0 and(terms_copy[i] in terms and terms_copy[j] in terms):
+                terms.append(terms_copy[i]*terms_copy[j])
+                terms.remove(terms_copy[j])
+                terms.remove(terms_copy[i])
+    return '*'.join(str(x) for x in terms)
 
 #Quy tac 5: Bo cac so 0 sau ket qua, va them lai cac so 0 vao ket qua cuoi cung
-def combine_terms_rul5(expr):
+def combine_terms_rul5(exprs):
     terms = []
     term =''
-    for char in expr:
+    for char in exprs:
         if char.isdigit():
             term += char
         else:
@@ -158,12 +157,66 @@ def combine_terms_rul5(expr):
     terms[0:(len(terms) - 1)] = [''.join(str(x) for x in terms[0:(len(terms) - 1)])]
     return terms
 
-#Quy tac 6: Dat thua so chung
-
+#Quy tac 6: Chuyen bieu thuc ve dang 1
+def combine_terms_rul6(exprs):
+    terms = []
+    term = ''
+    for x in exprs:
+        if x.isdigit() or (x == '-' and term == '') or x == '*':
+            term += x
+        elif x == '-' and term != '':
+            if(not term.isdigit()) and not term[len(term) - 1].isdigit():
+               term += x
+            else: 
+               if(term.isdigit()):
+                    terms.append(int(term))
+               else: 
+                    terms.append(term)
+               term = x
+        else:
+            if(term.isdigit()):
+                terms.append(int(term))
+            else: 
+                terms.append(term)
+            term = ''
+    if(term.isdigit()):
+        terms.append(int(term))
+    else: 
+        terms.append(term)
+    for i in range(len(terms)):
+        if isinstance(terms[i], (str)):
+            my_list = combine_terms_rul5(combine_terms_rul4(terms[i]))
+            terms[i] = int(str(combine_terms_rul7(my_list[0])) + ('0' * my_list[1]['zero']))
+    return '+'.join(str(x) for x in terms)
 #Quy tac 7: Tinh tuan tu
 def combine_terms_rul7(exprs):
     return eval(exprs)
 
+#Bieu thuc dang 1
+def pression_form_1(exprs):
+     print("After apply rules 1: ",combine_terms_rul1(exprs))
+     print("After apply rules 2: ",combine_terms_rul2(combine_terms_rul1(exprs)))
+     print("Result: ",combine_terms_rul7(combine_terms_rul2(combine_terms_rul1(exprs))))
+
+#Bieu thuc dang 2
+def pression_form_2(exprs):
+    if combine_terms_rul3(exprs) == '0':
+        print("After apply rules 3")
+        print("Result: ",combine_terms_rul3(exprs))
+    else:
+        print("After apply rules 4: ",combine_terms_rul4(exprs))
+        my_list = combine_terms_rul5(combine_terms_rul4(exprs))
+        print("After apply rules 5: {}, miss zero number: {}".format(my_list[0], my_list[1]['zero']))
+        result = str(combine_terms_rul7(my_list[0])) + ('0' * my_list[1]['zero'])
+        print("Result: ", result)
+
+#Bieu thuc dang 3
+def pression_form_3(exprs):
+    print(combine_terms_rul6(exprs))
+    terms = combine_terms_rul6(exprs)
+    terms = transform_expression(terms)
+    terms = terms.replace(' ', '')
+    pression_form_1(terms)
 #Main 
 while True:
     exprs = str(input("Enter the expression to calculate: "))
@@ -172,19 +225,13 @@ while True:
     exprs = transform_expression(exprs)
     exprs = exprs.replace(' ', '')
     if check_expression(exprs) == 0 and exprs !='':
-        #Expression sample: 2+5-2+8-7-5+8+2-7+9
-        print("After apply rules 1: ",combine_terms_rul1(exprs))
-        print("After apply rules 2: ",combine_terms_rul2(combine_terms_rul1(exprs)))
-        print("Result: ",combine_terms_rul7(combine_terms_rul2(combine_terms_rul1(exprs))))
+        #exprsession sample: 2+5-2+8-7-5+8+2-7+9
+        pression_form_1(exprs)
     elif check_expression(exprs) == 1 and exprs !='':
-       #Expression example 25*10*5*20*4*100
-       if combine_terms_rul3(exprs) == '0':
-            print("Result: ",combine_terms_rul3(exprs))
-       else:
-            print("After apply rules 4: ",combine_terms_rul4(exprs))
-            my_list = combine_terms_rul5(exprs)
-            print(my_list)
-            result = str(combine_terms_rul7(my_list[0])) + ('0' * my_list[1]['zero'])
-            print("(After apply rules 5)Result: ", result)
+       #exprsession example 25*10*5*20*4*100
+        pression_form_2(exprs)
+    elif check_expression(exprs) == -1 and exprs != '':
+        #exprsession sample: 25+10*5+20*41-9
+        pression_form_3(exprs)
     else:
         break
