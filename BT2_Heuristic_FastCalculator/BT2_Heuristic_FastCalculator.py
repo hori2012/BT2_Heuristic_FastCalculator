@@ -62,7 +62,7 @@ def combine_terms_rul1(exprs):
     i = 0
     terms_copy = terms.copy()
     for term in terms_copy:
-        if term in terms and -term in terms:
+        if term in terms and -term in terms and (terms in terms and -term in terms):
             terms.remove(term)
             terms.remove(-term)
     for i, x in enumerate(terms):
@@ -185,10 +185,14 @@ def combine_terms_rul6(exprs):
         terms.append(term)
     for i in range(len(terms)):
         if isinstance(terms[i], (str)):
-            my_list = combine_terms_rul5(combine_terms_rul4(terms[i]))
-            terms[i] = int(str(combine_terms_rul7(my_list[0])) + ('0' * my_list[1]['zero']))
+            if combine_terms_rul3(terms[i]) == '0':
+                terms[i] = int('0')
+            else:
+                my_list = combine_terms_rul5(combine_terms_rul4(terms[i]))
+                terms[i] = int(str(combine_terms_rul7(my_list[0])) + ('0' * my_list[1]['zero']))
     return '+'.join(str(x) for x in terms)
-#Quy tac 7: Tinh tuan tu
+
+#Quy tac 7: Tinh tuan tu, sau khi thuc hien het tat ca cac quy tac phu hop voi tung dang
 def combine_terms_rul7(exprs):
     return eval(exprs)
 
@@ -212,7 +216,7 @@ def pression_form_2(exprs):
 
 #Bieu thuc dang 3
 def pression_form_3(exprs):
-    print(combine_terms_rul6(exprs))
+    print("Expression after apply rules 6: ",combine_terms_rul6(exprs))
     terms = combine_terms_rul6(exprs)
     terms = transform_expression(terms)
     terms = terms.replace(' ', '')
@@ -220,10 +224,10 @@ def pression_form_3(exprs):
 #Main 
 while True:
     exprs = str(input("Enter the expression to calculate: "))
+    exprs = exprs.replace(' ', '')
     while not valid_expression(exprs):
         exprs = str(input("Enter the expression to calculate: "))
     exprs = transform_expression(exprs)
-    exprs = exprs.replace(' ', '')
     if check_expression(exprs) == 0 and exprs !='':
         #exprsession sample: 2+5-2+8-7-5+8+2-7+9
         pression_form_1(exprs)
