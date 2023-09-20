@@ -62,7 +62,7 @@ def combine_terms_rul1(exprs):
     i = 0
     terms_copy = terms.copy()
     for term in terms_copy:
-        if term in terms and -term in terms and (terms in terms and -term in terms):
+        if term in terms and -term in terms:
             terms.remove(term)
             terms.remove(-term)
     for i, x in enumerate(terms):
